@@ -14,7 +14,7 @@ Generates a rss/atom feed notifying you when Twitch streamers you follow go live
 
 ### Obtain your oauth2 token
 
-	$ ./obtain_oauth2_token.sh YOUR_CLIENT_ID YOUR_CLIENT_SECRET
+	$ ./scripts/obtain_oauth2.sh YOUR_CLIENT_ID YOUR_CLIENT_SECRET
 
 ### Set your config
 
