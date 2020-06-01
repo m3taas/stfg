@@ -28,6 +28,8 @@ Create and edit your config with the previously obtained parameters
 	$ python -m venv env && source env/bin/activate # optional
 	$ pip install -r requirements.txt
 
+Python version: 3.7.3
+
 ## Run
 
 Run using flasks built in server. **This is not suitable for production.**
