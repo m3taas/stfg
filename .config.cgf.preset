@@ -1,0 +1,7 @@
+[general]
+client_id = YOUR_CLIENT_ID
+bearer_token = YOUR_BEARER_TOKEN
+username = YOUR_USERNAME
+# optional
+atom_out = /srv/http/atom.xml
+rss_out = /srv/http/rss.xml
