@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
+
 # flask
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, request
 from flask_caching import Cache
 import os
 # external
@@ -15,20 +17,23 @@ cache = Cache(config={"CACHE_TYPE": "simple"})
 cache.init_app(app)
 
 
-@app.route("/feed/<req_type>")
-@cache.cached(timeout=540)
-def rss(req_type):
+# @cache.cached(timeout=540)
+@app.route('/feed')
+def stfg():
+    feed_type = request.args.get("ft", "rss")
+    channel = request.args.get("user", None)
 
-    mk.update()
+    if channel is None:
+        mk.update()
 
-    if req_type == "rss":
-        response = app.make_response(mk.rss_str())
+    if feed_type == "rss":
+        response = app.make_response(mk.rss_str(channel))
         response.headers.set("Content-Type", "application/rss+xml")
-    elif req_type == "atom":
-        response = app.make_response(mk.atom_str())
-        response.headers.set("Content-Type", "application/rss+xml")
-
-    return response
+        return response
+    elif feed_type == "atom":
+        response = app.make_response(mk.atom_str(channel))
+        response.headers.set("Content-Type", "application/atom+xml")
+        return response
 
 @app.route("/favicon.ico")
 def favicon():
