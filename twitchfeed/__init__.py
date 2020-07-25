@@ -25,28 +25,28 @@ class Helix:
         self.game_dict = {}
 
     """
-    string representation
+    String representation
     """
     def __str__(self):
         return "Helix:{}:{}".format(self.username, self.user_id)
 
     """
-    update stream list
+    Update stream list
     """
     def update_streams(self):
         followed_channels = self.__get_followed()
-        self.streams = self.__get_streams(followed_channels)
-        self.__update_games()
+        self.streams = self.get_streams(followed_channels, "user_id")
+        self.__update_games(self.streams)
         logging.info("{}: Updated streams".format(self))
 
     """
-    update game_dict from current streams
+    Update game_dict from current streams
     """
-    def __update_games(self):
+    def __update_games(self, streams):
 
         # current game ids
         game_ids = []
-        for stream in self.streams:
+        for stream in streams:
             _id = stream["game_id"]
             if not _id in self.game_dict.keys():
                 game_ids.append(_id)
@@ -62,7 +62,7 @@ class Helix:
                 self.game_dict[game["id"]] = game["name"]
 
     """
-    set user id attribute
+    Ret user id attribute
     """
     def __set_user_id(self):
         # get user id
@@ -71,7 +71,7 @@ class Helix:
         logging.debug("Obtained user id for '{}': '{}'".format(self.username, self.user_id))
 
     """
-    return current followed channels as a list of strings
+    Return current followed channels as a list of strings
     """
     def __get_followed(self):
         followed_req =  requests.get(self.BASE_URL + "/users/follows", params={"from_id": self.user_id} , headers=self.headers)
@@ -82,13 +82,16 @@ class Helix:
         return channels
 
     """
-    return current live streams as a list of dictionarys
+    Return current live streams as a list of dictionarys
     """
-    def __get_streams(self, channels):
+    def get_streams(self, channels, api_backend):
 
         params = []
-        for _id in channels:
-            params.append(("user_id", _id))
+        if isinstance(channels, list):
+            for _id in channels:
+                params.append((api_backend, _id))
+        else:
+            params = [(api_backend, channels)]
 
         streams_req =  requests.get(self.BASE_URL + "/streams", params=params, headers=self.headers)
 
