@@ -13,22 +13,23 @@ mk = mkfeed.MkFeed("config.cfg", "general")
 # create flask instance
 app = Flask(__name__)
 # setup cache
-cache = Cache(config={"CACHE_TYPE": "simple"})
+cache = Cache(config={"CACHE_TYPE": "simple", "CACHE_DEFAULT_TIMEOUT": 300})
 cache.init_app(app)
-# 5 minute cache timeout
-cache_timeout = 300
 
 @app.route('/feed')
-@cache.cached(timeout=cache_timeout)
-def follow_feed():
-    feed_type = request.args.get("ft", "rss")
-    return stfg(feed_type)
-
 @app.route('/feed/<channel>')
-@cache.cached(timeout=cache_timeout)
-def channel_feed(channel):
+def feed(channel=None):
     feed_type = request.args.get("ft", "rss")
-    return stfg(feed_type, channel)
+
+    response = cache.get("followed_{}_{}".format(feed_type, channel))
+    if response is None:
+        response_rss = stfg("rss", channel)
+        response_atom = stfg("atom", channel, False)
+        cache.set("followed_rss_{}".format(channel), response_rss)
+        cache.set("followed_atom_{}".format(channel), response_atom)
+        response = cache.get("followed_{}_{}".format(feed_type, channel))
+
+    return response
 
 @app.route("/favicon.ico")
 def favicon():
