@@ -43,9 +43,17 @@ Generate atom/rss files
 
 You can easily add a cronjob on your server to update the feed.
 
-Test your feed
+## Query the feed
 
-	$ curl http://HOST_IP:5000/feed/atom
-	$ curl http://HOST_IP:5000/feed/rss
+`ft` is an optional argument to your request and can either be `atom` or `rss` (default is `rss`)
 
-# [Twitch Helix api reference](https://dev.twitch.tv/docs/api/reference)
+To get a feed with all followed channels
+
+	$ curl 'http://HOST_IP:5000/feed'
+	$ curl 'http://HOST_IP:5000/feed?ft=atom'
+
+To get a feed from a single channel
+
+	$ curl 'http://HOST_IP:5000/feed/esl_csgo?ft=atom'
+
+### [Twitch Helix api reference](https://dev.twitch.tv/docs/api/reference)
