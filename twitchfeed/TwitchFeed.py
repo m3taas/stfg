@@ -91,7 +91,7 @@ class TwitchFeed:
     """
     Generate a feed for a single channel
     """
-    def parse_feed_single(self, helix, channel, feed_type):
+    def parse_feed_single(self, helix, channel):
 
         # setup feed
         fg = FeedGenerator()
@@ -113,7 +113,4 @@ class TwitchFeed:
             self.parse_feed(stream, helix.game_dict, fg)
             logging.debug("Stream: {}".format(stream))
         finally:
-            if feed_type == "rss":
-                return fg.rss_str(pretty=True)
-            elif feed_type == "atom":
-                return fg.atom_str(pretty=True)
+            return fg

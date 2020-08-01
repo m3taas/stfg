@@ -31,14 +31,30 @@ class MkFeed:
         self.__twitch_feed.flush()
         self.__twitch_feed.parse_feed_helix(self.__helix)
 
-    def atom_str(self, channel=None):
+    def feed_str(self, channel=None, feed_type="rss"):
         if channel is not None:
-            return self.__twitch_feed.parse_feed_single(self.__helix, channel, "atom")
-        else:
-            return self.__twitch_feed.fg.atom_str(pretty=True)
+            fg = self.__twitch_feed.parse_feed_single(self.__helix, channel)
 
-    def rss_str(self, channel=None):
-        if channel is not None:
-            return self.__twitch_feed.parse_feed_single(self.__helix, channel, "rss")
+            if feed_type == "rss":
+                return fg.rss_str(pretty=True)
+            elif feed_type == "atom":
+                return fg.atom_str(pretty=True)
         else:
-            return self.__twitch_feed.fg.rss_str(pretty=True)
+            if feed_type == "rss":
+                return self.__twitch_feed.fg.rss_str(pretty=True)
+            elif feed_type == "atom":
+                return self.__twitch_feed.fg.atom_str(pretty=True)
+
+    def feed_file(self, channel=None, feed_type="rss"):
+        if channel is not None:
+            fg = self.__twitch_feed.parse_feed_single(self.__helix, channel)
+
+            if feed_type == "rss":
+                return fg.rss_file(self.rss_out, pretty=True)
+            elif feed_type == "atom":
+                return fg.atom_file(self.atom_out, pretty=True)
+        else:
+            if feed_type == "rss":
+                return self.__twitch_feed.fg.rss_file(self.rss_out, pretty=True)
+            elif feed_type == "atom":
+                return self.__twitch_feed.fg.atom_file(self.atom_out, pretty=True)

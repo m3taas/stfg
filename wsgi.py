@@ -44,11 +44,11 @@ def stfg(feed_type=None, channel=None, update=True):
         mk.update()
 
     if feed_type == "rss":
-        response = app.make_response(mk.rss_str(channel))
+        response = app.make_response(mk.feed_str(channel))
         response.headers.set("Content-Type", "application/rss+xml")
         return response
     elif feed_type == "atom":
-        response = app.make_response(mk.atom_str(channel))
+        response = app.make_response(mk.feed_str(channel, "atom"))
         response.headers.set("Content-Type", "application/atom+xml")
         return response
 
