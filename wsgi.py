@@ -4,20 +4,24 @@
 from flask import Flask, send_from_directory, request
 from flask_caching import Cache
 import os
-# external
 from twitchfeed import mkfeed
 
+URL_PREFIX = "feed"
+CONFIG_NAME = "config.cfg"
+CACHE_DEFAULT_TIMEOUT = 300
+
 # twitchfeed
-mk = mkfeed.MkFeed("config.cfg", "general")
+mk = mkfeed.MkFeed(CONFIG_NAME, "general")
 
 # create flask instance
 app = Flask(__name__)
 # setup cache
-cache = Cache(config={"CACHE_TYPE": "simple", "CACHE_DEFAULT_TIMEOUT": 300})
+cache = Cache(config={"CACHE_TYPE": "simple",
+    "CACHE_DEFAULT_TIMEOUT": CACHE_DEFAULT_TIMEOUT})
 cache.init_app(app)
 
-@app.route('/feed')
-@app.route('/feed/<channel>')
+@app.route('/{}'.format(URL_PREFIX))
+@app.route('/{}/<channel>'.format(URL_PREFIX))
 def feed(channel=None):
     feed_type = request.args.get("ft", "rss")
 
