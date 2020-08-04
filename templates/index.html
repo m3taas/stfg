@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{ data.title }}</title>
+	</head>
+
+	<body>
+		<div style="font-size:13pt; padding: 10pt;">
+
+			<p style="font-size:15pt;">{{ data.title }}</p>
+			<br>
+
+			<p>
+			To get a feed with all your followed channels, subscribe to <a id="base_url" href="{{ data.feed_url }}">{{ data.feed_url }}</a><br>
+			For a specific channel, add the channel name to the url.
+			</p>
+
+			<form>
+				<label for="fname">Channel name:</label>
+				<input type="text" id="channel" value="esl_csgo" name="Channel"><br>
+				<label for="lname">Use Atom instead of RSS:</label>
+				<input type="checkbox" id="use_atom" checked="True">
+			</form>
+			<br>
+
+			<a id=dynamic_url></a>
+			<br>
+			<br>
+			<br>
+
+			<a href="https://github.com/m3taas/stfg">
+				<img style="height: 1em;" src="https://github.githubassets.com/favicons/favicon.svg" alt="Github">
+				Project source
+			</a>
+		</div>
+	</body>
+
+	<!--JS-->
+	<script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
+</html>
