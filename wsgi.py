@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # flask
-from flask import Flask, send_from_directory, request
+from flask import Flask, send_from_directory, request, url_for, render_template
 from flask_caching import Cache
 import os
 from twitchfeed import mkfeed
@@ -14,11 +14,27 @@ CACHE_DEFAULT_TIMEOUT = 300
 mk = mkfeed.MkFeed(CONFIG_NAME, "general")
 
 # create flask instance
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="/static")
 # setup cache
 cache = Cache(config={"CACHE_TYPE": "simple",
     "CACHE_DEFAULT_TIMEOUT": CACHE_DEFAULT_TIMEOUT})
 cache.init_app(app)
+
+# index page
+@app.route('/')
+def index():
+
+    feed_url = url_for("feed", _external=True)
+    feed_url_channel = "{}/CHANNEL".format(feed_url)
+    feed_url_channel_example = "{}/esl_csgo".format(feed_url)
+    html_data = {
+        "title" : "Simple Twitch Feed Generator",
+        "feed_url" : feed_url,
+        "feed_url_channel" : feed_url_channel,
+        "feed_url_channel_example" : feed_url_channel_example,
+    }
+
+    return render_template("index.html", data=html_data)
 
 @app.route('/{}'.format(URL_PREFIX))
 @app.route('/{}/<channel>'.format(URL_PREFIX))
@@ -34,10 +50,6 @@ def feed(channel=None):
         response = cache.get("followed_{}_{}".format(feed_type, channel))
 
     return response
-
-@app.route("/favicon.ico")
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, "media"), "favicon.ico", mimetype="image/vnd.microsoft.icon")
 
 def stfg(feed_type=None, channel=None, update=True):
 
@@ -55,6 +67,10 @@ def stfg(feed_type=None, channel=None, update=True):
         response = app.make_response(mk.feed_str(channel, "atom"))
         response.headers.set("Content-Type", "application/atom+xml")
         return response
+
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, "media"), "favicon.ico", mimetype="image/vnd.microsoft.icon")
 
 if __name__ == "__main__":
       app.run(host="127.0.0.1", port=5000)
