@@ -62,6 +62,7 @@ class MkFeed:
                 self.__helix = Helix(self.config_section["client_id"],
                         self.config_section["bearer_token"],
                         self.config_section["username"])
+                self.__helix.update_streams()
             # the bearer_token has expired
             except RuntimeError:
                 self.renew_bearer_token()
@@ -86,7 +87,11 @@ class MkFeed:
                 break
 
         self.__twitch_feed.flush()
-        self.__twitch_feed.parse_feed_helix(self.__helix)
+        try:
+            self.__twitch_feed.parse_feed_helix(self.__helix)
+        except AttributeError:
+            self.__helix.update_streams()
+            self.__twitch_feed.parse_feed_helix(self.__helix)
 
     def feed_str(self, channel=None, feed_type="rss"):
         if channel is not None:
