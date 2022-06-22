@@ -20,7 +20,7 @@ Generates a rss/atom feed notifying you when Twitch streamers you follow go live
 
 Create and edit your config with the previously obtained parameters
 
-	$ cp -vi .config.cgf.preset config.cfg
+	$ cp -vi .config.preset.cfg config.cfg
 	$ vim config.cfg
 
 ### Install dependencies
